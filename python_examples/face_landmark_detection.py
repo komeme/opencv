@@ -56,19 +56,19 @@ import dlib
 import glob
 from skimage import io
 
-if len(sys.argv) != 3:
-    print(
-        "Give the path to the trained shape predictor model as the first "
-        "argument and then the directory containing the facial images.\n"
-        "For example, if you are in the python_examples folder then "
-        "execute this program by running:\n"
-        "    ./face_landmark_detection.py shape_predictor_68_face_landmarks.dat ../examples/faces\n"
-        "You can download a trained facial shape predictor from:\n"
-        "    http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2")
-    exit()
+# if len(sys.argv) != 3:
+#     print(
+#         "Give the path to the trained shape predictor model as the first "
+#         "argument and then the directory containing the facial images.\n"
+#         "For example, if you are in the python_examples folder then "
+#         "execute this program by running:\n"
+#         "    ./face_landmark_detection.py shape_predictor_68_face_landmarks.dat ../examples/faces\n"
+#         "You can download a trained facial shape predictor from:\n"
+#         "    http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2")
+#     exit()
 
-predictor_path = sys.argv[1]
-faces_folder_path = sys.argv[2]
+predictor_path = "../shape_predictor_68_face_landmarks.dat"
+faces_folder_path = "../faces"
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
@@ -78,8 +78,8 @@ for f in glob.glob(os.path.join(faces_folder_path, "*.jpg")):
     print("Processing file: {}".format(f))
     img = io.imread(f)
 
-    win.clear_overlay()
-    win.set_image(img)
+    # win.clear_overlay()
+    # win.set_image(img)
 
     # Ask the detector to find the bounding boxes of each face. The 1 in the
     # second argument indicates that we should upsample the image 1 time. This
@@ -94,7 +94,7 @@ for f in glob.glob(os.path.join(faces_folder_path, "*.jpg")):
         print("Part 0: {}, Part 1: {} ...".format(shape.part(0),
                                                   shape.part(1)))
         # Draw the face landmarks on the screen.
-        win.add_overlay(shape)
-
-    win.add_overlay(dets)
+    #     win.add_overlay(shape)
+    #
+    # win.add_overlay(dets)
     dlib.hit_enter_to_continue()

@@ -41,7 +41,7 @@
 import dlib
 from skimage import io
 
-image_file = '../examples/faces/2009_004587.jpg'
+image_file = '../jobs.jpg'
 img = io.imread(image_file)
 
 # Locations of candidate objects will be saved into rects

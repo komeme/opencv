@@ -2,19 +2,30 @@
 
 import cv2
 import numpy as np
+import dlib
 
 # Read Image
 im = cv2.imread("HeadPose.jpg")
 size = im.shape
 
 # 2D image points. If you change the image, you need to change vector
+predictor_path = "shape_predictor_68_face_landmarks.dat"
+faces_folder_path = "faces"
+
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor(predictor_path)
+dets = detector(im, 1)
+print("Number of faces detected: {}".format(len(dets)))
+if len(dets) != 1:
+    exit(0)
+face = predictor(im, dets[0])
 image_points = np.array([
-    (359, 391),  # Nose tip
-    (399, 561),  # Chin
-    (337, 297),  # Left eye left corner
-    (513, 301),  # Right eye right corne
-    (345, 465),  # Left Mouth corner
-    (453, 469)  # Right mouth corner
+    (face.part(30).x, face.part(30).y),  # Nose tip
+    (face.part(8).x,  face.part(8).y),  # Chin
+    (face.part(36).x, face.part(36).y),  # Left eye left corner
+    (face.part(45).x, face.part(45).y),  # Right eye right corne
+    (face.part(48).x, face.part(48).y),  # Left Mouth corner
+    (face.part(54).x, face.part(54).y)  # Right mouth corner
 ], dtype="double")
 
 # 3D model points.
