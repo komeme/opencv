@@ -3,6 +3,8 @@
 import cv2
 import numpy as np
 import dlib
+import os
+import sys
 
 class Estimater(object):
     def __init__(self):
@@ -17,7 +19,7 @@ class Estimater(object):
         size = image.shape
         dets = self.detector(image, 1)
         if len(dets) != 1:
-            return image
+            return [0,image]
         self.count_face += 1
         face = self.predictor(image, dets[0])
         image_points = np.array([
@@ -65,4 +67,34 @@ class Estimater(object):
 
         cv2.line(image, p1, p2, (255, 0, 0), 2)
 
-        return image
+        # 顔の傾きを角度で表記
+        rotation_matrix = cv2.Rodrigues(rotation_vector)[0]
+        _r = rotation_matrix
+        # print(_r)q
+        projMat = np.array([[_r[0][0],_r[0][1],_r[0][2],0],
+                            [_r[1][0],_r[1][1],_r[1][2],0],
+                            [_r[2][0],_r[2][1],_r[2][2],0]])
+
+        #projMat = cv2.Mat(3, 4, cv2.CV_64FC1, projMatrix)
+        eulerAngles = cv2.decomposeProjectionMatrix(projMatrix=projMat, cameraMatrix=camera_matrix, rotMatrix=rotation_matrix)
+
+        yaw = eulerAngles[-1][1]
+        pitch = eulerAngles[-1][0]
+        roll = eulerAngles[-1][2]
+
+        # print("*"* 30)
+        # print("yaw = ", yaw, "deg")
+        # print("pitch = ", pitch, "deg")
+        # print("roll = ", roll, "deg")
+        # sys.stdout.write("\ryaw   = %f deg " % yaw)
+        # sys.stdout.write("pitch = %f deg " % pitch)
+        # sys.stdout.write("roll  = %f deg " % roll)
+        # sys.stdout.flush()
+
+        is_looking = 1
+        if(abs(yaw) > 20 or abs(pitch) < 160):
+            is_looking = 2
+
+        #print(rotation_vector)
+
+        return [is_looking,image]
