@@ -55,18 +55,20 @@ class VideoPlayer(object):
             is_read, frame = self.cap.read()
             self.count += 1
             if is_read:
-                # key = cv2.waitKey(self.frame_rate)
-                key = cv2.waitKey(1)
-                if key == 27:
-                    self.is_end = True
-                else:
-                    cv2.imshow(self.source, frame)
+                key = cv2.waitKey(self.frame_rate)
+                # key = cv2.waitKey(1)
+                # if key == 27:
+                #     self.is_end = True
+                # else:
+                #     cv2.imshow(self.source, frame)
+                cv2.imshow(self.source, frame)
             else:
                 self.is_end = True
 
     def stop(self):
         cv2.destroyAllWindows()
         self.cap.release()
+
 
 def main():
     global video_play_state
@@ -76,7 +78,7 @@ def main():
     is_looking_thread.start()
     while True:
         # player.play(video_play_state)
-        player.play(video_play_state)
+        player.play(True)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             player.is_end = True
         if player.is_end:

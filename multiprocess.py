@@ -1,34 +1,30 @@
-import asyncio
-import cv2
+from multiprocessing import Process
+from multiprocessing import Queue
+import time
 
-Seconds = [
-    ("first", 5),
-    ("second", 0),
-    ("third", 3)
-]
+# 呼び出したい関数
+def f1(q):
+    for i in range(1000):
+        var = q.get()
+        var[0] += 1
+        print(var[0])
+        q.put(var[0])
 
-
-async def sleeping(order, seconds, hook=None):
-    await asyncio.sleep(seconds)
-    if hook:
-        hook(order)
-    return order
-
-async def basic_async(num):
-    # the order of result is nonsequential (not depends on order, even sleeping time)
-    for s in Seconds:
-        r = await sleeping(*s)
-        print("{0}'s {1} is finished.".format(num, r))
-    return True
 
 def main():
-    loop = asyncio.get_event_loop()
-    announcement = ["no face", "looking", "not looking"]
-    cap = cv2.VideoCapture(0)
-    # make two tasks in event loop
-    asyncio.ensure_future(basic_async(1))
-    asyncio.ensure_future(basic_async(2))
-    loop.run_forever()
+    q = Queue()
+    # サブプロセスを作成します
+    p = Process(target=f1, args=(q,))
+    # 開始します
+    p.start()
+    q.put([0])
+    print("Process started.")
+    # サブプロセス終了まで待ちます
+    while q.get()[0] < 100:
+        print("foo")
+        print(q.get())
+    p.join()
+    print("Process joined.")
 
 if __name__ == "__main__":
     main()
