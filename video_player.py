@@ -11,10 +11,10 @@ class VideoPlayer(object):
     def play(self):
         if self.state:
             ret, frame = self.cap.read()
+            cv2.imshow("aaa", frame)
 
-            cv2.imshow(self.source, frame)
 
-    def check_state(self,new_state):
+    def check_state(self, new_state):
         self.state = new_state
 
     def stop(self):

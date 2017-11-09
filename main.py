@@ -5,11 +5,14 @@ import numpy as np
 import dlib
 from estimete import Estimater
 import sys
+from video_player import VideoPlayer
 
 def main():
     # image = cv2.imread("jobs.jpg")
     announcement = ["no face", "looking", "not looking"]
     cap = cv2.VideoCapture(0)
+    player = VideoPlayer("tanioka.mp4")
+
     estimater = Estimater()
     while(True):
         ret, image = cap.read()
@@ -21,11 +24,9 @@ def main():
 
         cv2.imshow("result", estimated)
         sys.stdout.write("\r%s" % announcement[is_looking])
-        # sys.stdout.flush()
+        sys.stdout.flush()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-        #print(100.0 * estimater.count_face/estimater.count)
 
 if __name__ == '__main__':
     main()

@@ -95,6 +95,5 @@ class Estimater(object):
         if(abs(yaw) > 20 or abs(pitch) < 160):
             is_looking = 2
 
-        #print(rotation_vector)
 
         return [is_looking,image]
