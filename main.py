@@ -5,10 +5,14 @@ import sys
 import os
 import time
 
+#  再生するか停止するか
 video_play_state = True
+
+#  ビデオ視聴を終了するかどうか
 end_flag = False
 
 
+#  顔向き検知
 class FaceChecker(object):
     def __init__(self):
         self.estimater = Estimater()
@@ -18,6 +22,7 @@ class FaceChecker(object):
         self.state_list = [0.5 for i in range(5)]
         cv2.namedWindow("capture", cv2.WINDOW_AUTOSIZE)
 
+    # 画面を見ているかどうか
     def check(self):
         global end_flag
         if not end_flag:
@@ -30,6 +35,7 @@ class FaceChecker(object):
             cv2.imshow("capture", masked_image)
             sys.stdout.write("\r%s" % self.announcement[self.state])
 
+    # video_play_stateを更新
     def renew_state(self):
         global video_play_state
         if self.state != 0 :
@@ -41,11 +47,13 @@ class FaceChecker(object):
         else:
             video_play_state = False
 
+    #  終了
     def quit(self):
         cv2.destroyAllWindows()
         self.cap.release()
 
 
+# 動画再生
 class VideoPlayer(object):
     def __init__(self, filename):
         self.source = filename
@@ -64,42 +72,51 @@ class VideoPlayer(object):
         """
         self.current_dir = os.getcwd()
 
+    # QuickTime Playerを起動
     def activate(self):
         # print("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['activate'])
         os.system("osascript %s" % './apple_scripts/' + self.apple_script['activate'])
         self.state = 0
 
+    # 動画ファイルをオープン
     def open(self):
-        try:
+        path = self.current_dir + '/videos/' + self.source
+        if os.path.exists(path):
             os.system("osascript %s %s" % (self.current_dir + '/apple_scripts/'+self.apple_script['open'], self.current_dir + '/videos/' + self.source))
             self.state = 1
-        except:
+        else:
             print("cannot open '%s'" % self.source)
             self.quit()
             exit(-1)
 
+    # 再生
     def play(self):
         os.system("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['play'])
         self.state = 2
 
+    # 一時停止
     def pause(self):
         os.system("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['pause'])
         self.state = 3
 
+    # 終了
     def quit(self):
         os.system("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['quit'])
         self.state = 4
 
 
+# メイン関数
 def main(video_file):
     global video_play_state
     global end_flag
 
-    face_checker = FaceChecker()
     player = VideoPlayer(video_file)
     player.activate()
+    face_checker = FaceChecker()
     time.sleep(1)
     player.open()
+
+    # 動画視聴終了までループ
     while not end_flag:
         face_checker.check()
         face_checker.renew_state()
@@ -116,5 +133,6 @@ def main(video_file):
     face_checker.quit()
 
 if __name__ == '__main__':
-    main('hikakin.mp4')
+    # コマンドライン引数で動画ファイル名を指定
+    main(sys.argv[1])
 
