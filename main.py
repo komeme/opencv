@@ -3,6 +3,7 @@ from estimete import Estimater
 import cv2
 import sys
 import os
+import time
 
 video_play_state = True
 end_flag = False
@@ -64,13 +65,18 @@ class VideoPlayer(object):
         self.current_dir = os.getcwd()
 
     def activate(self):
-        print("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['activate'])
+        # print("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['activate'])
         os.system("osascript %s" % './apple_scripts/' + self.apple_script['activate'])
         self.state = 0
 
     def open(self):
-        os.system("osascript %s %s" % (self.current_dir + '/apple_scripts/'+self.apple_script['open'], self.current_dir + '/videos/' + self.source))
-        self.state = 1
+        try:
+            os.system("osascript %s %s" % (self.current_dir + '/apple_scripts/'+self.apple_script['open'], self.current_dir + '/videos/' + self.source))
+            self.state = 1
+        except:
+            print("cannot open '%s'" % self.source)
+            self.quit()
+            exit(-1)
 
     def play(self):
         os.system("osascript %s" % self.current_dir + '/apple_scripts/' + self.apple_script['play'])
@@ -92,6 +98,7 @@ def main(video_file):
     face_checker = FaceChecker()
     player = VideoPlayer(video_file)
     player.activate()
+    time.sleep(1)
     player.open()
     while not end_flag:
         face_checker.check()
@@ -109,4 +116,4 @@ def main(video_file):
     face_checker.quit()
 
 if __name__ == '__main__':
-    main('tanioka.mp4')
+    main('hikakin.mp4')
