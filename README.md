@@ -1,5 +1,8 @@
 # Smart Video Player(略称：スマビ)
 
+## 概要
+画面への注視を認識して再生・一時停止をする動画プレイヤー
+
 ## 実行環境
 
 - MacBook Pro (Retina, 13-inch, Early 2015)
