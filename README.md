@@ -1,4 +1,4 @@
-# opencv
+# Smart Video Player(略称：スマビ)
 
 ## 実行環境
 
