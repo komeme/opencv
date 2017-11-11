@@ -24,4 +24,3 @@ Smart Video Player(略称：スマビ)
 
 ## 実行例
 python main sun-chang.mp4
-
